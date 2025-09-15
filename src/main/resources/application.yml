@@ -1,0 +1,64 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: supplies-communications
+
+  ## RabbitMQ Configuration
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:dwfs}
+    password: ${RABBITMQ_PASSWORD:rabbitmq}
+    virtual-host: ${RABBITMQ_VHOST:/}
+
+  # Configuración de correo electrónico
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+
+## Eureka Client Configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+    hostname: unir-supplies-catalogue
+
+## RabbitMQ Event Configuration
+rabbitmq:
+  queue:
+    mails:
+      order-created: mails.order.created
+  exchange:
+    orders: pedidos.creados
+  routing:
+    key:
+      order:
+        created: order.created
+
+# Configuración de notificaciones por correo
+email:
+  notification:
+    to: ${NOTIFICATION_EMAIL:unir.supplies@gmail.com} # Cambia esto por el correo del destinatario
+    from: ${FROM_EMAIL:UNIR Supplies - Tu tienda de suministros <unir.supplies@gmail.com>}
+
+# Configuración de logging
+logging:
+  level:
+    com.unir.supplies.communications: DEBUG
+    org.springframework.amqp: INFO
+    org.springframework.mail: DEBUG
