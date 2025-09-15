@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.unir.supplies</groupId>
-    <artifactId>back-end-supplies-communications</artifactId>
+    <artifactId>communications</artifactId>
     <version>1.0.0</version>
     <name>back-end-supplies-communications</name>
     <description>Microservicio de comunicaciones para el sistema de suministros</description>
