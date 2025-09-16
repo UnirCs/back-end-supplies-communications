@@ -1,7 +1,7 @@
-package com.unir.supplies.communications.service;
+package com.unir.supplies.communications.events.service;
 
-import com.unir.supplies.communications.event.model.OrderCreatedEvent;
-import com.unir.supplies.communications.event.model.OrderItemEvent;
+import com.unir.supplies.communications.events.model.OrderCreatedEvent;
+import com.unir.supplies.communications.events.model.OrderItemEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

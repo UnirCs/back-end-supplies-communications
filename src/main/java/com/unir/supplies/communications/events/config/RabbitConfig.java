@@ -1,4 +1,4 @@
-package com.unir.supplies.communications.config;
+package com.unir.supplies.communications.events.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

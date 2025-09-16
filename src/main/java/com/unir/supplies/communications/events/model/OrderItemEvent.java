@@ -1,4 +1,4 @@
-package com.unir.supplies.communications.event.model;
+package com.unir.supplies.communications.events.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

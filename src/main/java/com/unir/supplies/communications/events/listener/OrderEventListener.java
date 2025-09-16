@@ -1,7 +1,7 @@
-package com.unir.supplies.communications.listener;
+package com.unir.supplies.communications.events.listener;
 
-import com.unir.supplies.communications.event.model.OrderCreatedEvent;
-import com.unir.supplies.communications.service.EmailService;
+import com.unir.supplies.communications.events.model.OrderCreatedEvent;
+import com.unir.supplies.communications.events.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
