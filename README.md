@@ -234,3 +234,88 @@ export EMAIL_PASSWORD=abcd-efgh-ijkl-mnop   # La App Password de 16 caracteres
 | Autenticación | Sí |
 
 El servicio escucha en el **puerto 8082**.
+
+---
+
+## Integración con New Relic (opcional — Tema 9)
+
+> ⚠️ **Esta integración es opcional** y no es necesaria para las actividades del curso. Se explica en detalle en el **Tema 9**.
+
+El proyecto incluye una integración con **New Relic APM** para monitorización de rendimiento en producción. Para que funcione, intervienen tres piezas del `pom.xml`:
+
+### 1. Dependencia `newrelic-java` (tipo zip)
+
+```xml
+<dependency>
+    <groupId>com.newrelic.agent.java</groupId>
+    <artifactId>newrelic-java</artifactId>
+    <version>9.2.0</version>
+    <scope>provided</scope>
+    <type>zip</type>
+</dependency>
+```
+
+Descarga el agente de New Relic como un archivo ZIP durante la resolución de dependencias. El scope `provided` evita que se empaquete dentro del fat JAR.
+
+### 2. Plugin `maven-dependency-plugin` — unpack del agente
+
+```xml
+<plugin>
+    <artifactId>maven-dependency-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>unpack-newrelic</id>
+            <phase>package</phase>
+            <goals><goal>unpack-dependencies</goal></goals>
+            <configuration>
+                <includeGroupIds>com.newrelic.agent.java</includeGroupIds>
+                <excludes>**/newrelic.yml</excludes>
+                <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+Descomprime el ZIP en `target/`, generando la carpeta `target/newrelic/` con el `newrelic.jar` y demás ficheros del agente. **Excluye `newrelic.yml`** para no sobrescribir la plantilla del repositorio.
+
+### 3. Plugin `maven-resources-plugin` — copia del `newrelic.yml` con filtrado
+
+```xml
+<plugin>
+    <artifactId>maven-resources-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>copy-newrelic-yml</id>
+            <phase>package</phase>
+            <goals><goal>copy-resources</goal></goals>
+            <configuration>
+                <outputDirectory>${project.build.directory}/newrelic</outputDirectory>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/newrelic</directory>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+Copia `src/main/resources/newrelic/newrelic.yml` a `target/newrelic/`, aplicando **filtrado Maven** para sustituir `${env.NEW_RELIC_LICENSE_KEY}` por el valor real de la variable de entorno. Así la clave de licencia **nunca se commitea** en el repositorio.
+
+### Cómo usarlo
+
+```bash
+# 1. Exportar la clave de licencia de ingesta de New Relic
+export NEW_RELIC_LICENSE_KEY="eu01f......"
+
+# 2. Compilar (descarga, descomprime el agente y copia el yml con la clave)
+mvn clean package
+
+# 3. Arrancar con el agente de New Relic
+java -javaagent:target/newrelic/newrelic.jar -jar target/communications-1.0.0.jar
+```
+
+La clave de licencia de ingesta se obtiene desde la propia cuenta de New Relic, en la sección de **API Keys**.
